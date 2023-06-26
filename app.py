@@ -3,12 +3,14 @@ import copy
 import time
 from storygeneration.combined import generateStory
 from threading import *
+from data import Data
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Set a secret key for session encryption
 
 def promptProcess():
-    global prompts, session_ids
+    global prompts, session_ids, results
+    data = Data()
     while True:
         unsolved_prompts = [{key:prompts[key]["prompt"]} for key in prompts.keys() if prompts[key]["result"] == None and prompts[key]["prompt"] != None]
         if len(unsolved_prompts) > 0:
@@ -16,6 +18,10 @@ def promptProcess():
             currentId = list(current_prompt.keys())[0]
             text = generateStory("Default", current_prompt[currentId])
             prompts[currentId]["result"] = text
+            timetamp = int(time.time())
+            data.addResult(current_prompt[currentId], text, timetamp)
+            results = data.getResults()
+            print(results)
         else:
             time.sleep(0.2)
 
@@ -42,27 +48,21 @@ def home():
         result = ""
     return render_template('index.html', result=result)
 
-@app.route('/result')
-def result():
-    prompt = session.get('prompt')  # Retrieve the prompt from the session
-    if prompt:
-        result = generateStory(prompt)  # Call your function to generate the story
-        session.pop('prompt')  # Remove the prompt from the session after processing
-        return render_template('index.html', result=result)
-    return "No prompts available."
-
 @app.route('/about')
 def about():
     return render_template('team.html')
 
 @app.route('/stories')
 def stories():
-    return render_template('stories.html')
+    global results
+    return render_template('stories.html', results=results, length=len(results))
 
 
 if __name__ == '__main__':
-    global prompts, session_ids
+    global prompts, session_ids, results
     prompts = {}
+    data = Data()
+    results = data.getResults()
     session_ids = 0
     T = Thread(target=promptProcess, daemon=True)
     T.start()

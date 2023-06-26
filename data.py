@@ -10,12 +10,17 @@ class Data():
 
     def addResult(self, prompt: str, output: str, timestamp: int) -> None:
         cursor = self.conn.cursor()
+        prompt = prompt.replace('"', "'")
+        prompt = prompt.replace("!", ".")
+        
+        output = output.replace('"', "'")
+        output = output.replace("!", ".")
         try:
-            cursor.execute("INSERT INTO result VALUES('{}', '{}', {})".format(prompt, output, timestamp))
+            cursor.execute('INSERT INTO result VALUES("{}", "{}", {});'.format(prompt, output, timestamp))
             cursor.close()
             self.conn.commit()
-        except sqlite3.Error:
-            cursor.execute("UPDATE result SET timestamp={} WHERE prompt='{}'".format(timestamp, prompt))
+        except sqlite3.Error as e:
+            cursor.execute('UPDATE result SET timestamp={} WHERE prompt="{}";'.format(timestamp, prompt))
             cursor.close()
             self.conn.commit()
 
