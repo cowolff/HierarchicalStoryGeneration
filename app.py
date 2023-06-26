@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, session
 import copy
 import time
+from storygeneration.combined import generateStory
 from threading import *
 
 app = Flask(__name__)
@@ -13,8 +14,7 @@ def promptProcess():
         if len(unsolved_prompts) > 0:
             current_prompt = unsolved_prompts[0]
             currentId = list(current_prompt.keys())[0]
-            time.sleep(1)
-            text = generateStory(current_prompt[currentId])
+            text = generateStory("Default", current_prompt[currentId])
             prompts[currentId]["result"] = text
         else:
             time.sleep(0.2)
@@ -59,10 +59,6 @@ def about():
 def stories():
     return render_template('stories.html')
 
-def generateStory(prompt):
-    # Your story generation logic here
-    # This is just a placeholder
-    return "Generated story for prompt: " + prompt
 
 if __name__ == '__main__':
     global prompts, session_ids
