@@ -3,3 +3,4 @@ storygeneration/txt_sentoken/pos
 storygeneration/save
 *.bsdesign
 *.db
+*.DS_Store
