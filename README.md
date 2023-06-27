@@ -18,6 +18,10 @@ This project was created as part of the Creativity in Natural Language Processin
 ## ✨ Features
 <br/>
 This repository has two main features. One is the ability to start the training process of the model based on costum data. Furthermore it provides a web interface for using the (pre)trained models in a nice environment that can handle multiple users at once. 
+<br/>
+<p align="center">
+<img src="images/ScreenshotWebInterface.png" alt="Logo" width="60%">
+</p>
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## 💻 Usage
