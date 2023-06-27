@@ -4,6 +4,7 @@ import time
 from storygeneration.combined import generateStory
 from threading import *
 from data import Data
+import tensorflow as tf
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Set a secret key for session encryption
@@ -14,6 +15,7 @@ def promptProcess():
     while True:
         unsolved_prompts = [{key:prompts[key]["prompt"]} for key in prompts.keys() if prompts[key]["result"] == None and prompts[key]["prompt"] != None]
         if len(unsolved_prompts) > 0:
+            tf.compat.v1.reset_default_graph()
             current_prompt = unsolved_prompts[0]
             currentId = list(current_prompt.keys())[0]
             text = generateStory("Default", current_prompt[currentId])
