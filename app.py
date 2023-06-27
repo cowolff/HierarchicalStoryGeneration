@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, url_for
 import copy
 import time
 from storygeneration.combined import generateStory
@@ -25,10 +25,13 @@ def promptProcess():
         else:
             time.sleep(0.2)
 
+@app.route('/', methods=['GET'])
+def base():
+    return redirect(url_for('home'))
+
 @app.route('/home', methods=['GET', 'POST'])
 def home():
     global prompts, session_ids
-    print(session.keys())
     if "sessionId" not in session.keys() or session["sessionId"] not in prompts.keys():
         session_ids += 1
         session["sessionId"] = copy.deepcopy(session_ids)
